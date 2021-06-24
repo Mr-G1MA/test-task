@@ -1,38 +1,96 @@
-.App {
-  text-align: center;
+ table {
+  width: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+ table td,
+ table th {
+  padding: 5px;
+  text-align: left;
+  position: relative;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+ table td {
+  word-break: break-word;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+ tbody tr:nth-child(n) {
+  background: #ddd;
+}
+
+thead tr{
+  background: #ddd;
+}
+
+.sort{
+  outline: none;
+  background: transparent;
+  border: none;
+  width: 23px;
+  height: 23px;
+  cursor: pointer;
+}
+
+#filter{
+  outline: none;
+  background: transparent;
+  border: none;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+}
+
+thead th div{
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
+}
+
+.sort-img-none{
+  width:100%;
+  
+}
+
+.sort-img-down{
+  width:100%;
+  transform: rotate(90deg);
+}
+
+.sort-img-up{
+  width:100%;
+  transform: rotate(-90deg);
+}
+
+#filter-img{
+  width:100%;
+}
+
+.filter__input-wrapper--active{
+  position: absolute;
+  width: 45%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: rgba(0,0,0,0.5);
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  top: 80%;
+  right: 0;
+  z-index: 10;
 }
 
-.App-link {
-  color: #61dafb;
+.filter__input-close{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  right: -1%;
+  cursor: pointer;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.filter__input{
+  width: 80%;
+}
+
+.filter__input-wrapper--hidden{
+  display: none;
 }

@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "Name": "John",
+    "Age": 20,
+    "phone": "+79365442124"
+  },
+  {
+    "id": 2,
+    "Name": "Bulat",
+    "Age": 30,
+    "phone": "+79172263146",
+    "mail": "asdasd@mail.ru"
+  },
+  {
+    "id": 5,
+    "Name": "Aleksandr",
+    "Age": 40
+  },
+  {
+    "id": 53,
+    "Name": "Lisa",
+    "Age": 23,
+    "mail": "fres@bk.ru"
+  }
+]
