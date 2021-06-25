@@ -15,6 +15,8 @@ class filter extends React.Component {
         let arr = tableInfo;
         let filteringArr = [];
         let tempArr = [];
+        let filterArr = [];
+        let inputArr = [];
         let emptyInput = 0;
         const headerArr = document.querySelectorAll("thead th");
         let filterNum = 0;
@@ -56,7 +58,7 @@ class filter extends React.Component {
             filteringArr.push(object[name]);
           }
           else if (typeof object[name] !== 'undefined'){
-            if (typeof object[name] == 'string'){
+            if ((typeof object[name] == 'string')){
               if (object[name].toLowerCase().startsWith(filter.toLowerCase())){
                 filteringArr.push(object[name]);
               }
@@ -72,99 +74,205 @@ class filter extends React.Component {
         /* обновление таблицы */
 
         function update (filterNum) {
-          for (let i = 0; i<headerArr.length; i++){
-            if (headerArr[i].querySelector(".filter__input").value == ""){
-              emptyInput++;
+          let arr = tableInfo;
+          for (let i = 0; i< headerArr.length; i++){
+            if (headerArr[i].querySelector(".filter__input").value !== ""){
+              filterArr.push(headerArr[i].querySelector(".filter__input").value);
+              inputArr.push(headerArr[i].querySelector("div").textContent);
             }
           }
-          if ((headerArr.length - emptyInput !== 1)&&(headerArr.length - emptyInput !== 0)){
-            arr = [];
-            let bodyTr = document.querySelectorAll("tbody tr");
-            for (let i=0; i<bodyTr.length;i++){
-              let obj = {};
-              let bodyTh = bodyTr[i].querySelectorAll("th");
-              for (let x = 0; x<5; x++){
-                obj[headerArr[x].querySelector("div").textContent]= bodyTh[x].textContent;
-              }
-              arr.push(obj);
-              
-            }
-          }
-          emptyInput = 0;
           
           if (filterNum == 0){
-            for(let i = 0; i<arr.length; i++){
-              makeArr(arr[i], "id");
+            if (filterArr.length !== 0){
+              for (let x = 0; x<filterArr.length; x++){
+                filter = filterArr[x];
+                for(let i = 0; i<arr.length; i++){
+                  makeArr(arr[i], `${inputArr[x]}`);
+                }
+
+                for (let i=0; i<filteringArr.length; i++) {
+                  for (let f = 0; f<arr.length; f++){
+                    if (((filteringArr[i]==arr[f][inputArr[x]])||(filteringArr[i]==""&&arr[f][inputArr[x]]==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[f]))==-1)){
+                      tempArr.push(arr[f]);
+                      break;
+                    }
+                  }
+                }
+                arr = tempArr;
+                if ((filterArr.length - x) !== 1){
+                  tempArr = [];
+                }
+              }
             }
-            for (let i=0; i<filteringArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((filteringArr[i]==arr[x].id)||(filteringArr[i]==""&&arr[x].id==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
+            else{
+              for(let i = 0; i<arr.length; i++){
+                makeArr(arr[i], "id");
+              }
+
+              for (let i=0; i<filteringArr.length; i++) {
+                for (let x = 0; x<arr.length; x++){
+                  if (((filteringArr[i]==arr[x].id)||(filteringArr[i]==""&&arr[x].id==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
+                    tempArr.push(arr[x]);
+                    break;
+                  }
                 }
               }
             }
           }
           else if (filterNum == 1){
-            for(let i = 0; i<arr.length; i++){
-              makeArr(arr[i], "Name");
+            if (filterArr.length !== 0){
+              for (let x = 0; x<filterArr.length; x++){
+                filter = filterArr[x];
+
+                for(let i = 0; i<arr.length; i++){
+                  makeArr(arr[i], `${inputArr[x]}`);
+                }
+
+                for (let i=0; i<filteringArr.length; i++) {
+                  for (let f = 0; f<arr.length; f++){
+                    if (((filteringArr[i]==arr[f][inputArr[x]])||(filteringArr[i]==""&&arr[f][inputArr[x]]==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[f]))==-1)){
+                      tempArr.push(arr[f]);
+                      break;
+                    }
+                  }
+                }
+                arr = tempArr;
+                if ((filterArr.length - x) !== 1){
+
+                  tempArr = [];
+                }
+              }
             }
-            for (let i=0; i<filteringArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((filteringArr[i]==arr[x].Name)||(filteringArr[i]==""&&arr[x].Name==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
+            else{
+              for(let i = 0; i<arr.length; i++){
+                makeArr(arr[i], "Name");
+              }
+
+              for (let i=0; i<filteringArr.length; i++) {
+                for (let x = 0; x<arr.length; x++){
+                  if (((filteringArr[i]==arr[x].Name)||(filteringArr[i]==""&&arr[x].Name==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
+                    tempArr.push(arr[x]);
+                    break;
+                  }
                 }
               }
             }
           }
           else if (filterNum == 2){
-            for(let i = 0; i<arr.length; i++){
-              makeArr(arr[i], "Age");
+            if (filterArr.length !== 0){
+              for (let x = 0; x<filterArr.length; x++){
+                filter = filterArr[x];
+
+                for(let i = 0; i<arr.length; i++){
+                  makeArr(arr[i], `${inputArr[x]}`);
+                }
+
+                for (let i=0; i<filteringArr.length; i++) {
+                  for (let f = 0; f<arr.length; f++){
+                    if (((filteringArr[i]==arr[f][inputArr[x]])||(filteringArr[i]==""&&arr[f][inputArr[x]]==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[f]))==-1)){
+                      tempArr.push(arr[f]);
+                      break;
+                    }
+                  }
+                }
+
+                arr = tempArr;
+                if ((filterArr.length - x) !== 1){
+
+                  tempArr = [];
+                }
+              }
             }
-            for (let i=0; i<filteringArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((filteringArr[i]==arr[x].Age)||(filteringArr[i]==""&&arr[x].Age==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
+            else{
+              for(let i = 0; i<arr.length; i++){
+                makeArr(arr[i], "Age");
+              }
+
+              for (let i=0; i<filteringArr.length; i++) {
+                for (let x = 0; x<arr.length; x++){
+                  if (((filteringArr[i]==arr[x].Age)||(filteringArr[i]==""&&arr[x].Age==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
+                    tempArr.push(arr[x]);
+                    break;
+                  }
                 }
               }
             }
           }
           else if (filterNum == 3){
-            for(let i = 0; i<arr.length; i++){
-              makeArr(arr[i], "phone");
+            if (filterArr.length !== 0){
+              for (let x = 0; x<filterArr.length; x++){
+                filter = filterArr[x];
+                for(let i = 0; i<arr.length; i++){
+                  makeArr(arr[i], `${inputArr[x]}`);
+                }
+
+                for (let i=0; i<filteringArr.length; i++) {
+                  for (let f = 0; f<arr.length; f++){
+                    if (((filteringArr[i]==arr[f][inputArr[x]])||(filteringArr[i]==""&&arr[f][inputArr[x]]==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[f]))==-1)){
+                      tempArr.push(arr[f]);
+                      break;
+                    }
+                  }
+                }
+                arr = tempArr;
+                if ((filterArr.length - x) !== 1){
+
+                  tempArr = [];
+                }
+              }
             }
-            for (let i=0; i<filteringArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((filteringArr[i]==arr[x].phone)||(filteringArr[i]==""&&arr[x].phone==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
+            else{
+              for(let i = 0; i<arr.length; i++){
+                makeArr(arr[i], "phone");
+              }
+
+              for (let i=0; i<filteringArr.length; i++) {
+                for (let x = 0; x<arr.length; x++){
+                  if (((filteringArr[i]==arr[x].phone)||(filteringArr[i]==""&&arr[x].phone==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
+                    tempArr.push(arr[x]);
+                    break;
+                  }
                 }
               }
             }
           }
           else if (filterNum == 4){
-            for(let i = 0; i<arr.length; i++){
-              makeArr(arr[i], "mail");
-            }
-            for (let i=0; i<filteringArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((filteringArr[i]==arr[x].mail)||(filteringArr[i]==""&&arr[x].mail==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
+            if (filterArr.length !== 0){
+              for (let x = 0; x<filterArr.length; x++){
+                filter = filterArr[x];
+                for(let i = 0; i<arr.length; i++){
+                  makeArr(arr[i], `${inputArr[x]}`);
+                }
+
+                for (let i=0; i<filteringArr.length; i++) {
+                  for (let f = 0; f<arr.length; f++){
+                    if (((filteringArr[i]==arr[f][inputArr[x]])||(filteringArr[i]==""&&arr[f][inputArr[x]]==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[f]))==-1)){
+                      tempArr.push(arr[f]);
+                      break;
+                    }
+                  }
+                }
+                arr = tempArr;
+                if ((filterArr.length - x) !== 1){
+
+                  tempArr = [];
                 }
               }
             }
-          }
-          for (let i = 0; i<headerArr.length; i++){
-            if (headerArr[i].querySelector(".filter__input").value == ""){
-              emptyInput++;
-            }
-          }
+            else{
+              for(let i = 0; i<arr.length; i++){
+                makeArr(arr[i], "mail");
+              }
 
-          if (emptyInput == headerArr.length){
-            tempArr=tableInfo;
+              for (let i=0; i<filteringArr.length; i++) {
+                for (let x = 0; x<arr.length; x++){
+                  if (((filteringArr[i]==arr[x].mail)||(filteringArr[i]==""&&arr[x].mail==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
+                    tempArr.push(arr[x]);
+                    break;
+                  }
+                }
+              }
+            }
           }
 
           ReactDOM.render(
@@ -188,6 +296,8 @@ class filter extends React.Component {
           emptyInput = 0;
           tempArr = [];
           filteringArr = [];
+          filterArr = [];
+          inputArr = [];
         }
       }
     })

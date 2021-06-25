@@ -9,24 +9,46 @@ class sort extends React.Component {
 
     /* сортировка по убыванию */
     function sortLeast(a,b){
-      if (a.toLowerCase() > b.toLowerCase()) {
-        return 1;
+      try {
+        if (JSON.parse(a) > JSON.parse(b)) {
+          return 1;
+        }
+        if (JSON.parse(a) < JSON.parse(b)) {
+          return -1;
+        }
+        return 0;
       }
-      if (a.toLowerCase() < b.toLowerCase()) {
-        return -1;
+      catch (e) {
+        if (a.toLowerCase() > b.toLowerCase()) {
+          return 1;
+        }
+        if (a.toLowerCase() < b.toLowerCase()) {
+          return -1;
+        }
+        return 0;
       }
-      return 0;
     }
     
     /* сортировка по возрастанию */
     function sortOver(a,b){
-      if (a.toLowerCase() < b.toLowerCase()) {
-        return 1;
+      try {
+        if (JSON.parse(a) < JSON.parse(b)) {
+          return 1;
+        }
+        if (JSON.parse(a) > JSON.parse(b)) {
+          return -1;
+        }
+        return 0;
       }
-      if (a.toLowerCase() > b.toLowerCase()) {
-        return -1;
+      catch (e) {
+        if (a.toLowerCase() < b.toLowerCase()) {
+          return 1;
+        }
+        if (a.toLowerCase() > b.toLowerCase()) {
+          return -1;
+        }
+        return 0;
       }
-      return 0;
     }
 
     this.element.addEventListener('click', (e)=>{
@@ -54,7 +76,7 @@ class sort extends React.Component {
             let th = tr[i].querySelectorAll("th");
             sortingArr.push(th[0].textContent);
           }
-
+          console.log(sortingArr);
           if (sortImg.className == "sort-img-none"){
             sortingArr.sort(sortLeast);  
             for (let i=0; i<sortingArr.length; i++) {
