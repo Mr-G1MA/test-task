@@ -1,326 +1,165 @@
 import React from 'react';
-import tableInfo from './data.json';
-import ReactDOM from 'react-dom';
+import sortImg from './arrow-down.svg';
+let counter = 0;
+let origList = [];
 
 class sort extends React.Component {
-  constructor(element){
-    super();
-    this.element = element;
-
-    /* сортировка по убыванию */
-    function sortLeast(a,b){
-      try {
-        if (JSON.parse(a) > JSON.parse(b)) {
-          return 1;
-        }
-        if (JSON.parse(a) < JSON.parse(b)) {
-          return -1;
-        }
-        return 0;
+  
+  constructor(props){
+    super(props);
+    this.sortFunc = this.sortFunc.bind(this);
+  }
+  
+  /* сортировка по убыванию */
+  sortLeast(a,b){
+    try {
+      if (JSON.parse(a) > JSON.parse(b)) {
+        return 1;
       }
-      catch (e) {
-        if (a.toLowerCase() > b.toLowerCase()) {
-          return 1;
+      if (JSON.parse(a) < JSON.parse(b)) {
+        return -1;
+      }
+      return 0;
+    }
+    catch (e) {
+      if (a.toLowerCase() > b.toLowerCase()) {
+        return 1;
+      }
+      if (a.toLowerCase() < b.toLowerCase()) {
+        return -1;
+      }
+      return 0;
+    }
+  }
+  
+  /* сортировка по возрастанию */
+  sortOver(a,b){
+    try {
+      if (JSON.parse(a) < JSON.parse(b)) {
+        return 1;
+      }
+      if (JSON.parse(a) > JSON.parse(b)) {
+        return -1;
+      }
+      return 0;
+    }
+    catch (e) {
+      if (a.toLowerCase() < b.toLowerCase()) {
+        return 1;
+      }
+      if (a.toLowerCase() > b.toLowerCase()) {
+        return -1;
+      }
+      return 0;
+    }
+  }
+
+  sortFunc(e){
+    let sortingArr = [];
+    let tempArr = this.props.arr;
+    let sortedArr = [];
+    let name = this.props.column;
+    let buttons = document.querySelectorAll("#sort-btn");
+    let filtersNum = 0;
+    let filters = document.querySelectorAll(".filter__input");
+
+    for (let i = 0; i<filters.length; i++){
+      if (filters[i].value!==''){
+        filtersNum++;
+      }
+    }
+
+    for (let i = 0; i<tempArr.length; i++){
+      sortingArr.push(tempArr[i][name]);
+
+      if (counter == 0){
+        origList.push(tempArr[i]);
+      }
+    }
+
+    for (let i = 0; i<buttons.length; i++){
+      if(e.target.childNodes.length == 0){
+        if (buttons[i]!==e.target.closest("button")){
+          buttons[i].className = "sort-img-none";
         }
-        if (a.toLowerCase() < b.toLowerCase()) {
-          return -1;
+      }
+      else{
+        if (buttons[i]!==e.target){
+          buttons[i].className = "sort-img-none";
         }
-        return 0;
+      }
+    }
+
+    if (e.target.childNodes.length == 0){
+      if (e.target.closest("button").className == "sort-img-none"){
+        sortingArr.sort(this.sortLeast);
+        e.target.closest("button").className = "sort-img-down";
+        counter++;
+      }
+      else if (e.target.closest("button").className == "sort-img-down"){
+        sortingArr.sort(this.sortOver);
+        e.target.closest("button").className = "sort-img-up";
+      }
+      else if (e.target.closest("button").className == "sort-img-up"){
+        if (filtersNum !== 0){
+          e.target.closest("button").className = "sort-img-none";
+          counter = 0;
+        }
+        else{
+          sortingArr = [];
+          for (let i = 0; i<this.props.orig.length; i++){
+            sortingArr.push(this.props.orig[i][name]);
+          }
+          e.target.closest("button").className = "sort-img-none";
+        }
+      }
+    }
+    else{
+      if (e.target.className == "sort-img-none"){
+        sortingArr.sort(this.sortLeast);
+        e.target.className = "sort-img-down";
+        counter++;
+      }
+      else if (e.target.className == "sort-img-down"){
+        sortingArr.sort(this.sortOver);
+        e.target.className = "sort-img-up";
+      }
+      else if (e.target.className == "sort-img-up"){
+        if (filtersNum !== 0){
+          e.target.className = "sort-img-none";
+          counter = 0;
+        }
+        else{
+          sortingArr = [];
+          for (let i = 0; i<this.props.orig.length; i++){
+            sortingArr.push(this.props.orig[i][name]);
+          }
+          e.target.className = "sort-img-none";
+        }
       }
     }
     
-    /* сортировка по возрастанию */
-    function sortOver(a,b){
-      try {
-        if (JSON.parse(a) < JSON.parse(b)) {
-          return 1;
+    for (let i = 0; i<sortingArr.length; i++){
+      for (let x = 0; x<tempArr.length; x++){
+        if((tempArr[x][name]==sortingArr[i])&&(JSON.stringify(sortedArr).indexOf(JSON.stringify(tempArr[x]))==-1)){
+          sortedArr.push(tempArr[x]);
+          break;
         }
-        if (JSON.parse(a) > JSON.parse(b)) {
-          return -1;
-        }
-        return 0;
-      }
-      catch (e) {
-        if (a.toLowerCase() < b.toLowerCase()) {
-          return 1;
-        }
-        if (a.toLowerCase() > b.toLowerCase()) {
-          return -1;
-        }
-        return 0;
       }
     }
+    if(counter == 0){
+      this.props.func(origList);
+      origList = [];
+    }
+    else{
+      this.props.func(sortedArr);
+    }
+  }
 
-    this.element.addEventListener('click', (e)=>{
-      e.preventDefault();
-      if (e.target.className == "sort"||e.target.id == "sort"){
-        let arr = tableInfo;
-        const colNum = e.target.closest("th");
-        const headerArr = document.querySelectorAll("thead th");
-        const sortImg = colNum.querySelector("#sort");
-        const anotherSortImg = document.querySelectorAll("#sort");
-        let sortNum = 0;
-        let sortingArr = [];
-        let tempArr = [];
-
-        for (let i=0; i<headerArr.length; i++) {
-          if (colNum.textContent == headerArr[i].textContent){
-            sortNum = i;
-          }
-        }
-          
-        if (sortNum == 0){
-          let tr = document.querySelectorAll("tbody tr");
-
-          for (let i=0; i<tr.length; i++) {
-            let th = tr[i].querySelectorAll("th");
-            sortingArr.push(th[0].textContent);
-          }
-          console.log(sortingArr);
-          if (sortImg.className == "sort-img-none"){
-            sortingArr.sort(sortLeast);  
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].id)||(sortingArr[i]==""&&arr[x].id==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else if (sortImg.className == "sort-img-down"){
-            sortingArr.sort(sortOver);
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].id)||(sortingArr[i]==""&&arr[x].id==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else{
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].id)||(sortingArr[i]==""&&arr[x].id==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-            if (sortingArr.length == arr.length){
-              tempArr = arr;
-            }
-          }
-
-        }
-        else if (sortNum == 1){ 
-          let tr = document.querySelectorAll("tbody tr");
-
-          for (let i=0; i<tr.length; i++) {
-            let th = tr[i].querySelectorAll("th");
-            sortingArr.push(th[1].textContent);
-          }
-
-          if (sortImg.className == "sort-img-none"){
-            sortingArr.sort(sortLeast);  
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].Name)||(sortingArr[i]==""&&arr[x].Name==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else if (sortImg.className == "sort-img-down"){
-            sortingArr.sort(sortOver);
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].Name)||(sortingArr[i]==""&&arr[x].Name==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else{
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].Name)||(sortingArr[i]==""&&arr[x].Name==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-            if (sortingArr.length == arr.length){
-              tempArr = arr;
-            }
-          }
-        }
-        else if (sortNum == 2){
-          let tr = document.querySelectorAll("tbody tr");
-
-          for (let i=0; i<tr.length; i++) {
-            let th = tr[i].querySelectorAll("th");
-            sortingArr.push(th[2].textContent);
-          }
-
-          if (sortImg.className == "sort-img-none"){
-            sortingArr.sort(sortLeast);  
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].Age)||(sortingArr[i]==""&&arr[x].Age==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else if (sortImg.className == "sort-img-down"){
-            sortingArr.sort(sortOver);
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].Age)||(sortingArr[i]==""&&arr[x].Age==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else{
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].Age)||(sortingArr[i]==""&&arr[x].Age==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-            if (sortingArr.length == arr.length){
-              tempArr = arr;
-            }
-          } 
-        }
-        else if (sortNum == 3){
-          let tr = document.querySelectorAll("tbody tr");
-
-          for (let i=0; i<tr.length; i++) {
-            let th = tr[i].querySelectorAll("th");
-            sortingArr.push(th[3].textContent);
-          }
-
-          if (sortImg.className == "sort-img-none"){
-            sortingArr.sort(sortLeast);  
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].phone)||(sortingArr[i]==""&&arr[x].phone==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else if (sortImg.className == "sort-img-down"){
-            sortingArr.sort(sortOver);
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].phone)||(sortingArr[i]==""&&arr[x].phone==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else{
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].phone)||(sortingArr[i]==""&&arr[x].phone==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-            if (sortingArr.length == arr.length){
-              tempArr = arr;
-            }
-          } 
-        }
-        else {
-          let tr = document.querySelectorAll("tbody tr");
-
-          for (let i=0; i<tr.length; i++) {
-            let th = tr[i].querySelectorAll("th");
-            sortingArr.push(th[4].textContent);
-          }
-
-          if (sortImg.className == "sort-img-none"){
-            sortingArr.sort(sortLeast);  
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].mail)||(sortingArr[i]==""&&arr[x].mail==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else if (sortImg.className == "sort-img-down"){
-            sortingArr.sort(sortOver);
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].mail)||(sortingArr[i]==""&&arr[x].mail==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-          }
-          else{
-            for (let i=0; i<sortingArr.length; i++) {
-              for (let x = 0; x<arr.length; x++){
-                if (((sortingArr[i]==arr[x].mail)||(sortingArr[i]==""&&arr[x].mail==null))&&(JSON.stringify(tempArr).indexOf(JSON.stringify(arr[x]))==-1)){
-                  tempArr.push(arr[x]);
-                  break;
-                }
-              }
-            }
-            if (sortingArr.length == arr.length){
-              tempArr = arr;
-            }
-          }
-        }
-        ReactDOM.render(
-                tempArr.map(item =>(
-                  <tr >
-                    <th>{item.id}</th>
-                    <th>{item.Name}</th>
-                    <th>{item.Age}</th>
-                    <th>{item.phone}</th>
-                    <th>{item.mail}</th>
-                  </tr>  
-                )),
-          document.getElementById('table__body')
-        );
-        arr = tempArr;
-        tempArr = [];
-        sortingArr = [];
-        if (sortImg.className == "sort-img-none"){
-          sortImg.className = "sort-img-down";
-        }
-        else if (sortImg.className == "sort-img-down"){
-          sortImg.className = "sort-img-up";
-        }
-        else{
-          sortImg.className = "sort-img-none";
-        }
-        for (let i=0; i<anotherSortImg.length; i++){
-          if (i!==sortNum){
-            anotherSortImg[i].className = "sort-img-none";
-          }
-        }
-      }
-    })
+  render(){
+    return(
+      <button onClick={(e) => this.sortFunc(e)} className="sort-img-none" id="sort-btn"><img id="sort" src={sortImg}></img></button>
+    );
   }
 }
 

@@ -22,12 +22,7 @@ thead tr{
 }
 
 .sort{
-  outline: none;
-  background: transparent;
-  border: none;
-  width: 23px;
-  height: 23px;
-  cursor: pointer;
+  
 }
 
 #filter{
@@ -43,19 +38,46 @@ thead th div{
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.sort-img-none{
-  width:100%;
   
 }
 
+.sort-img-none{
+  outline: none;
+  background: transparent;
+  border: none;
+  width: 23px;
+  height: 23px;
+  cursor: pointer;
+}
+
+.sort-img-none #sort{
+  width:100%;
+}
+
 .sort-img-down{
+  outline: none;
+  background: transparent;
+  border: none;
+  width: 23px;
+  height: 23px;
+  cursor: pointer;
+}
+
+.sort-img-down #sort{
   width:100%;
   transform: rotate(90deg);
 }
 
 .sort-img-up{
+  outline: none;
+  background: transparent;
+  border: none;
+  width: 23px;
+  height: 23px;
+  cursor: pointer;
+}
+
+.sort-img-up #sort{
   width:100%;
   transform: rotate(-90deg);
 }
