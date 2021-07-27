@@ -1,7 +1,6 @@
 import React from 'react';
-import sortImg from './arrow-down.svg';
+import sortImg from '../arrow-down.svg';
 let counter = 0;
-let origList = [];
 
 class sort extends React.Component {
   
@@ -55,6 +54,7 @@ class sort extends React.Component {
   }
 
   sortFunc(e){
+    
     let sortingArr = [];
     let tempArr = this.props.arr;
     let sortedArr = [];
@@ -71,10 +71,6 @@ class sort extends React.Component {
 
     for (let i = 0; i<tempArr.length; i++){
       sortingArr.push(tempArr[i][name]);
-
-      if (counter == 0){
-        origList.push(tempArr[i]);
-      }
     }
 
     for (let i = 0; i<buttons.length; i++){
@@ -92,6 +88,7 @@ class sort extends React.Component {
 
     if (e.target.childNodes.length == 0){
       if (e.target.closest("button").className == "sort-img-none"){
+        this.props.updateArr();
         sortingArr.sort(this.sortLeast);
         e.target.closest("button").className = "sort-img-down";
         counter++;
@@ -116,6 +113,7 @@ class sort extends React.Component {
     }
     else{
       if (e.target.className == "sort-img-none"){
+        this.props.updateArr();
         sortingArr.sort(this.sortLeast);
         e.target.className = "sort-img-down";
         counter++;
@@ -148,8 +146,7 @@ class sort extends React.Component {
       }
     }
     if(counter == 0){
-      this.props.func(origList);
-      origList = [];
+      this.props.func(this.props.prevArr);
     }
     else{
       this.props.func(sortedArr);

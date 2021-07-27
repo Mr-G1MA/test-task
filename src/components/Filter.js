@@ -1,5 +1,5 @@
 import React from 'react';
-import loupe from './loupe.svg';
+import loupe from '../loupe.svg';
 
 class filter extends React.Component {
   constructor(props){
@@ -63,10 +63,6 @@ class filter extends React.Component {
     })
   }
 
-  componentWillUnmount(){
-    document.removeEventListener('click');
-  }
-
   makeArr(temp, filter, name){
     let arr = [];
     for (let i = 0; i<temp.length; i++){
@@ -125,7 +121,7 @@ class filter extends React.Component {
         <button onClick={(e) => this.open(e)} id="filter"><img id="filter-img" src={loupe}></img></button>
         <div className="filter__input-wrapper--hidden">
           <div className="filter__input-close">X</div>
-          <input onInput={(e) => this.filter(e)} className="filter__input" id={`input-${this.props.column}`} placeHolder="поиск" type="text"></input>
+          <input onInput={(e) => this.filter(e)} className="filter__input" id={`input-${this.props.column}`} placeholder="поиск" type="text"></input>
         </div>
       </div>
     );
