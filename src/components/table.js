@@ -52,11 +52,9 @@ class Table extends React.Component {
           <tbody id="table__body">
               {this.state.current.map(item =>(
                 <tr key={item.id}>
-                  <th>{item.id}</th>
-                  <th>{item.Name}</th>
-                  <th>{item.Age}</th>
-                  <th>{item.phone}</th>
-                  <th>{item.mail}</th>
+                  {this.state.arr.map(col =>(
+                    <th>{item[col]}</th>
+                  ))}
                 </tr>  
               ))}
           </tbody>
